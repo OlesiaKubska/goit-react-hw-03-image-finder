@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from 'api';
 import Searchbar from './Searchbar/Searchbar';
+import ImageGallery from './ImageGallery/ImageGallery';
 
 const IMAGES_PER_PAGE = 12;
 
@@ -32,7 +33,7 @@ export class App extends Component {
     return (
       <div>
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        
+        <ImageGallery images={images} />
         <div>
           {images.map((image) => (
             <img key={image.id} src={image.webformatURL} alt="" />
