@@ -1,20 +1,25 @@
-import React from 'react'; 
+import React, { Component } from 'react'; 
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
+import { StyledImageGallery } from './ImageGallery.styled';
 
-const ImageGallery = ({ images }) => {
-    return (
-        <ul className="gallery">
-            {images.map((image) => (
-                <ImageGalleryItem
-                    key={image.id}
-                    imageUrl={image.webformatURL}
-                    alt=""
-                />
-            ))}
-        </ul>
-    );
-};
+class ImageGallery extends Component {
+    render() {
+        const { images } = this.props;
+
+        return (
+            <StyledImageGallery>
+                {images.map((image) => (
+                    <ImageGalleryItem
+                        key={image.id}
+                        imageUrl={image.webformatURL}
+                        alt=""
+                    />
+                ))}
+            </StyledImageGallery>
+        );
+    }
+}
 
 ImageGallery.propTypes = {
     images: PropTypes.arrayOf(
