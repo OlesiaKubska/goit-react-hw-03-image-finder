@@ -11,19 +11,19 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData('nature');
   }
 
-  fetchData = async () => {
+  fetchData = async (query) => {
     try {
-      const images = await api.fetchImages(1, IMAGES_PER_PAGE);
+      const images = await api.fetchImages(query, 1, IMAGES_PER_PAGE);
       this.setState({ images });
     } catch (error) {
       console.error(error);
     }
   };
 
-  handleSearchSubmit = query => {
+  handleSearchSubmit = (query) => {
     this.fetchData(query);
   }
 
@@ -34,11 +34,7 @@ export class App extends Component {
       <div>
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery images={images} />
-        <div>
-          {images.map((image) => (
-            <img key={image.id} src={image.webformatURL} alt="" />
-          ))}
-        </div>
+        
       </div>
     );
   }

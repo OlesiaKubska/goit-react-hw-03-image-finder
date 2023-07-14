@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Searchbar extends Component {
-    state = {
-        query: '',
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: '',
+        };
+    }
 
     handleChange = event => {
         this.setState({ query: event.target.value });

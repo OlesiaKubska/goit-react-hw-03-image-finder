@@ -1,13 +1,16 @@
-import React, { Component } from 'react'; 
+import React from 'react'; 
 import PropTypes from 'prop-types';
+import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 
 const ImageGallery = ({ images }) => {
     return (
         <ul className="gallery">
             {images.map((image) => (
-                <li key={image.id}>
-                    <img src={image.webformatURL} alt="" />
-                </li>
+                <ImageGalleryItem
+                    key={image.id}
+                    imageUrl={image.webformatURL}
+                    alt=""
+                />
             ))}
         </ul>
     );
