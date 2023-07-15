@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { DotLoader } from 'react-spinners';
+import { LoaderContainer } from './Loader.styled';
 
 class Loader extends Component {
     render() {
 
         return (
-            <div className="loader">
+            <LoaderContainer>
                 <DotLoader
                     color="#00BFFF"
                     size={80}
                 />
-            </div>
+            </LoaderContainer>
         );
     }
 }

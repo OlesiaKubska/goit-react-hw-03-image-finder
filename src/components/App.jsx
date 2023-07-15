@@ -13,21 +13,34 @@ export class App extends Component {
     currentPage: 1,
     query: '',
     isLoading: false,
+    hasLoadedAll: false,
   };
 
-  componentDidMount() {
-    this.fetchData();
+  // componentDidMount() {
+  //   // this.fetchData();
+  // }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.page !== prevState.page || this.state.query !== prevState.query) {
+      this.fetchData();
+    }
   }
 
-  fetchData = async (query, page = 1) => {
+  fetchData = async () => {
+    const { query, currentPage } = this.state;
+
     try {
       this.setState({ isLoading: true });
-      const images = await api.fetchImages(query, page, IMAGES_PER_PAGE);
+      const images = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
       
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images],
-        currentPage: page,
-      }));
+      if (images.length > 0) {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...images],
+          hasLoadedAll: false,
+        }));  
+      } else {
+        this.setState({ hasLoadedAll: true });
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -35,29 +48,38 @@ export class App extends Component {
     }
   };
 
-  handleSearchSubmit = query => {
-    this.setState({ images: [], currentPage: 1, query }, () => {
-      this.fetchData(query);
+  handleSearchSubmit = () => {
+    this.setState({ images: [], currentPage: 1 }, () => {
+      this.fetchData();
     });
   };
 
   handleLoadMore = () => {
-    const { currentPage, query } = this.state;
-    const nextPage = currentPage + 1;
-
-    this.fetchData(query, nextPage, IMAGES_PER_PAGE);
+    this.setState(prevState => ({
+      currentPage: prevState.currentPage + 1,
+    }), () => {
+      this.fetchData();
+    });
   };
 
   render() {
-    const { images, isLoading, query } = this.state;
-    const showButton = images.length > 0 && !isLoading;
+    const { images, isLoading, hasLoadedAll } = this.state;
+    const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
 
     return (
       <div>
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        {query && <ImageGallery images={images} />}
-        {showButton && <Button onClick={this.handleLoadMore}>Load More</Button>}
-        {isLoading && <Loader />}
+
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <ImageGallery images={images} />
+        )}
+
+        {showButton && (
+          <Button onClick={this.handleLoadMore}>Load More</Button>
+        )}
+        {}
       </div>
     );
   }
