@@ -10,38 +10,50 @@ import { Container } from './App.Styled';
 const IMAGES_PER_PAGE = 12;
 
 export class App extends Component {
-  state = {
-    images: [],
-    currentPage: 1,
-    query: '',
-    isLoading: false,
-    hasLoadedAll: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      images: [],
+      currentPage: 1,
+      query: '',
+      totalPages: 0,
+      isLoading: false,
+      hasLoadedAll: false,
+      isFirstLoad: true,
+    };
+  }
 
-  // componentDidMount() {
-  //   // this.fetchData();
-  // }
+  componentDidMount() {
+    this.fetchData();
+  }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.page !== prevState.page || this.state.query !== prevState.query) {
+    if (prevState.query !== this.state.query || prevState.currentPage !== this.state.currentPage) {
       this.fetchData();
     }
   }
 
   fetchData = async () => {
-    const { query, currentPage } = this.state;
+    const { query, currentPage, isFirstLoad } = this.state;
 
     try {
       this.setState({ isLoading: true });
-      const images = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
+
+      if (!isFirstLoad || query.trim() !== '') {
+        const images = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
       
-      if (images.length > 0) {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
-          hasLoadedAll: false,
-        }));  
-      } else {
-        this.setState({ hasLoadedAll: true });
+        if (images.length > 0) {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...images],
+            hasLoadedAll: false,
+          }));
+        } else {
+          this.setState({ hasLoadedAll: true });
+        }
+      }
+
+      if (isFirstLoad) {
+      this.setState({ isFirstLoad: false });
       }
     } catch (error) {
       console.error(error);
@@ -50,18 +62,14 @@ export class App extends Component {
     }
   };
 
-  handleSearchSubmit = () => {
-    this.setState({ images: [], currentPage: 1 }, () => {
-      this.fetchData();
-    });
+  handleSearchSubmit = newQuery => {
+    this.setState({ query: newQuery, currentPage: 1, images: [] });
   };
 
   handleLoadMore = () => {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
-    }), () => {
-      this.fetchData();
-    });
+    }));
   };
 
   render() {
@@ -75,7 +83,7 @@ export class App extends Component {
         {isLoading ? (
           <Loader />
         ) : (
-          <ImageGallery images={images} />
+          <ImageGallery images={this.state.images} />
         )}
 
         {showButton && (
