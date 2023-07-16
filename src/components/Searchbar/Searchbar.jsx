@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Header, Form, Button, ButtonLabel, Input } from './Searchbar.styled';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 class Searchbar extends Component {
     constructor(props) {
@@ -24,14 +26,14 @@ class Searchbar extends Component {
         const { query } = this.state;
 
         return (
-            <header className="searchbar">
-                <form className="form" onSubmit={this.handleSubmit}>
-                    <button type="submit" className="button">
-                        <span className="button-label">Search</span>
-                    </button>
+            <Header>
+                <Form onSubmit={this.handleSubmit}>
+                    <Button type="submit">
+                        <HiMagnifyingGlass />
+                        <ButtonLabel>Search</ButtonLabel>
+                    </Button>
 
-                    <input
-                        className="input"
+                    <Input
                         type="text"
                         autoComplete="off"
                         autoFocus
@@ -39,8 +41,8 @@ class Searchbar extends Component {
                         value={query}
                         onChange={this.handleChange}
                     />
-                </form>
-            </header>
+                </Form>
+            </Header>
         );
     }
 }

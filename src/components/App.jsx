@@ -4,6 +4,8 @@ import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
+import { GlobalStyle } from './GlobalStyle';
+import { Container } from './App.Styled';
 
 const IMAGES_PER_PAGE = 12;
 
@@ -67,7 +69,7 @@ export class App extends Component {
     const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
 
     return (
-      <div>
+      <Container>
         <Searchbar onSubmit={this.handleSearchSubmit} />
 
         {isLoading ? (
@@ -79,8 +81,8 @@ export class App extends Component {
         {showButton && (
           <Button onClick={this.handleLoadMore}>Load More</Button>
         )}
-        {}
-      </div>
+        <GlobalStyle />
+      </Container>
     );
   }
 }
