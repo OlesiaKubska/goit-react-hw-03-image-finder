@@ -6,6 +6,7 @@ import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import { GlobalStyle } from './GlobalStyle';
 import { Container } from './App.Styled';
+import Modal from './Modal/Modal';
 
 const IMAGES_PER_PAGE = 12;
 
@@ -20,6 +21,9 @@ export class App extends Component {
       isLoading: false,
       hasLoadedAll: false,
       isFirstLoad: true,
+      isModalOpen: false,
+      selectedImage: null,
+      selectedImageAlt: '',
     };
   }
 
@@ -53,7 +57,7 @@ export class App extends Component {
       }
 
       if (isFirstLoad) {
-      this.setState({ isFirstLoad: false });
+        this.setState({ isFirstLoad: false });
       }
     } catch (error) {
       console.error(error);
@@ -72,8 +76,16 @@ export class App extends Component {
     }));
   };
 
+  openModal = (imageUrl, imageAlt) => {
+    this.setState({ isModalOpen: true, selectedImage: imageUrl, selectedImageAlt: imageAlt });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false, selectedImage: null, selectedImageAlt: '' });
+  };
+
   render() {
-    const { images, isLoading, hasLoadedAll } = this.state;
+    const { images, isLoading, hasLoadedAll, isModalOpen, selectedImage, selectedImageAlt } = this.state;
     const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
 
     return (
@@ -83,12 +95,15 @@ export class App extends Component {
         {isLoading ? (
           <Loader />
         ) : (
-          <ImageGallery images={this.state.images} />
+          <ImageGallery images={this.state.images} onClickImage={this.openModal} />
         )}
 
         {showButton && (
           <Button onClick={this.handleLoadMore}>Load More</Button>
         )}
+
+        <Modal isOpen={isModalOpen} imageUrl={selectedImage || ''} alt={selectedImageAlt} onClose={this.closeModal} />
+
         <GlobalStyle />
       </Container>
     );
