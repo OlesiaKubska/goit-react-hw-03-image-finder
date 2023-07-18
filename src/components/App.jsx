@@ -18,12 +18,12 @@ export class App extends Component {
       currentPage: 1,
       query: '',
       totalPages: 0,
+      totalHits: 0,
       isLoading: false,
       hasLoadedAll: false,
       isFirstLoad: true,
-      isModalOpen: false,
-      selectedImage: null,
-      selectedImageAlt: '',
+      isShowModal: false,
+      modalData: { img: null, tags: '' },
     };
   }
 
@@ -38,24 +38,29 @@ export class App extends Component {
   }
 
   fetchData = async () => {
-    const { query, currentPage, isFirstLoad } = this.state;
+    const { query, currentPage, isFirstLoad, images } = this.state;
 
     try {
       this.setState({ isLoading: true });
 
       if (!isFirstLoad || query.trim() !== '') {
-        const images = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
-      
-        if (images.length > 0) {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...images],
-            hasLoadedAll: false,
-          }));
+        const response = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
+        const { hits, totalHits } = response;
+
+        if (hits.length > 0) {
+          const newImages = [...images, ...hits];
+          const hasLoadedAll = currentPage >= Math.ceil(totalHits/ IMAGES_PER_PAGE);
+          
+          this.setState({
+            images: newImages,
+            hasLoadedAll,
+            totalHits,
+          });
         } else {
           this.setState({ hasLoadedAll: true });
         }
       }
-
+        
       if (isFirstLoad) {
         this.setState({ isFirstLoad: false });
       }
@@ -77,15 +82,16 @@ export class App extends Component {
   };
 
   openModal = (imageUrl, imageAlt) => {
-    this.setState({ isModalOpen: true, selectedImage: imageUrl, selectedImageAlt: imageAlt });
+    const modalData = { largeImageURL: imageUrl, tags: imageAlt };
+    this.setState({ isShowModal: true, modalData });
   };
 
   closeModal = () => {
-    this.setState({ isModalOpen: false, selectedImage: null, selectedImageAlt: '' });
+    this.setState({ isShowModal: false });
   };
 
   render() {
-    const { images, isLoading, hasLoadedAll, isModalOpen, selectedImage, selectedImageAlt } = this.state;
+    const { images, isLoading, hasLoadedAll, isShowModal, modalData } = this.state;
     const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
 
     return (
@@ -102,7 +108,9 @@ export class App extends Component {
           <Button onClick={this.handleLoadMore}>Load More</Button>
         )}
 
-        <Modal isOpen={isModalOpen} imageUrl={selectedImage || ''} alt={selectedImageAlt} onClose={this.closeModal} />
+        {isShowModal && (
+          <Modal modalData={modalData} onClose={this.closeModal} />
+        )}
 
         <GlobalStyle />
       </Container>

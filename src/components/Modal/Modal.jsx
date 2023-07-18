@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ModalContainer, Overlay } from './Modal.styled';
+import { ModalContainer, Overlay, ModalDescr } from './Modal.styled';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#modal-root');
+
 class Modal extends Component {
     componentDidMount() {
         window.addEventListener('keydown', this.handleKeyDown);
@@ -26,16 +27,18 @@ class Modal extends Component {
     };
 
     render() {
-        const { isOpen, imageUrl } = this.props;
-
-        if (!isOpen) {
+        const { modalData } = this.props;
+        if (!modalData) {
             return null;
         }
+        
+        const { largeImageURL, tags } = modalData;
 
         return createPortal (
             <Overlay onClick={this.handleClickOutside}>
                 <ModalContainer>
-                    <img src={imageUrl} alt="" />
+                    <img src={largeImageURL} alt={tags} />
+                    <ModalDescr>{tags}</ModalDescr>
                 </ModalContainer>
             </Overlay>,
             modalRoot
@@ -44,8 +47,10 @@ class Modal extends Component {
 }
 
 Modal.propTypes = {
-    imageUrl: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired,
+    modalData: PropTypes.shape({
+        largeImageURL: PropTypes.string.isRequired,
+        tags: PropTypes.string.isRequired,
+    }), 
     onClose: PropTypes.func.isRequired,
 };
 

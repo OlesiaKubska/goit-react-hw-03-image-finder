@@ -16,11 +16,14 @@ const fetchImages = async (query, page, perPage) => {
             },
         });
 
-        return response.data.hits.map(image => ({
-            id: image.id,
-            webformatURL: image.webformatURL,
-            largeImageURL: image.largeImageURL,
-        }));
+        return {
+            hits: response.data.hits.map(image => ({
+                id: image.id,
+                webformatURL: image.webformatURL,
+                largeImageURL: image.largeImageURL,
+            })),
+            totalHits: response.data.totalHits,
+        };
     } catch (error) {
         console.error(error);
         throw new Error('Failed to fetch images');
