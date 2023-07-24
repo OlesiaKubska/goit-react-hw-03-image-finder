@@ -23,7 +23,7 @@ export class App extends Component {
       hasLoadedAll: false,
       isFirstLoad: true,
       isShowModal: false,
-      modalData: { img: null, tags: '' },
+      modalData: { largeImageURL: null, tags: '' },
     };
   }
 
@@ -81,14 +81,14 @@ export class App extends Component {
     }));
   };
 
-  openModal = (imageUrl, imageAlt) => {
-    const modalData = { largeImageURL: imageUrl, tags: imageAlt };
-    this.setState({ isShowModal: true, modalData });
-  };
+  // openModal = (imageUrl, imageAlt) => {
+  //   const modalData = { largeImageURL: imageUrl, alt: imageAlt };
+  //   this.setState({ isShowModal: true, modalData });
+  // };
 
-  closeModal = () => {
-    this.setState({ isShowModal: false });
-  };
+  // closeModal = () => {
+  //   this.setState({ isShowModal: false });
+  // };
 
   render() {
     const { images, isLoading, hasLoadedAll, isShowModal, modalData } = this.state;
@@ -101,7 +101,7 @@ export class App extends Component {
         {isLoading ? (
           <Loader />
         ) : (
-          <ImageGallery images={this.state.images} onClickImage={this.openModal} />
+          <ImageGallery images={this.state.images} openModal={this.openModal} />
         )}
 
         {showButton && (

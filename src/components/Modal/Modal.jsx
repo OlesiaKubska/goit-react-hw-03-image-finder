@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ModalContainer, Overlay, ModalDescr } from './Modal.styled';
+import { ModalContainer, Overlay } from './Modal.styled';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#modal-root');
@@ -32,13 +32,13 @@ class Modal extends Component {
             return null;
         }
         
-        const { largeImageURL, tags } = modalData;
+        const { largeImageURL, alt } = modalData;
 
         return createPortal (
             <Overlay onClick={this.handleClickOutside}>
                 <ModalContainer>
-                    <img src={largeImageURL} alt={tags} />
-                    <ModalDescr>{tags}</ModalDescr>
+                    <img src={largeImageURL} alt={alt} />
+                    
                 </ModalContainer>
             </Overlay>,
             modalRoot
@@ -49,7 +49,7 @@ class Modal extends Component {
 Modal.propTypes = {
     modalData: PropTypes.shape({
         largeImageURL: PropTypes.string.isRequired,
-        tags: PropTypes.string.isRequired,
+        alt: PropTypes.string.isRequired,
     }), 
     onClose: PropTypes.func.isRequired,
 };
