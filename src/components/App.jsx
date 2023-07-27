@@ -6,7 +6,6 @@ import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import { GlobalStyle } from './GlobalStyle';
 import { Container } from './App.Styled';
-import Modal from './Modal/Modal';
 
 const IMAGES_PER_PAGE = 12;
 
@@ -23,7 +22,7 @@ export class App extends Component {
       hasLoadedAll: false,
       isFirstLoad: true,
       isShowModal: false,
-      modalData: { largeImageURL: null, tags: '' },
+      modalData: { largeImageURL: null, alt: '' },
     };
   }
 
@@ -81,17 +80,8 @@ export class App extends Component {
     }));
   };
 
-  // openModal = (imageUrl, imageAlt) => {
-  //   const modalData = { largeImageURL: imageUrl, alt: imageAlt };
-  //   this.setState({ isShowModal: true, modalData });
-  // };
-
-  // closeModal = () => {
-  //   this.setState({ isShowModal: false });
-  // };
-
   render() {
-    const { images, isLoading, hasLoadedAll, isShowModal, modalData } = this.state;
+    const { images, isLoading, hasLoadedAll } = this.state;
     const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
 
     return (
@@ -101,15 +91,11 @@ export class App extends Component {
         {isLoading ? (
           <Loader />
         ) : (
-          <ImageGallery images={this.state.images} openModal={this.openModal} />
+          <ImageGallery images={this.state.images} />
         )}
 
         {showButton && (
           <Button onClick={this.handleLoadMore}>Load More</Button>
-        )}
-
-        {isShowModal && (
-          <Modal modalData={modalData} onClose={this.closeModal} />
         )}
 
         <GlobalStyle />

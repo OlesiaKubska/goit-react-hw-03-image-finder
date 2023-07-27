@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import { StyledImageGallery } from './ImageGallery.styled';
+import Modal from 'components/Modal/Modal';
 
 class ImageGallery extends Component {
     state = {
@@ -21,18 +22,24 @@ class ImageGallery extends Component {
     
     render() {
         const { images } = this.props;
-        console.log(this.openModal);
+        const { isShowModal, modalData } = this.state;
+        // console.log(this.openModal);
 
         return (
-            <StyledImageGallery>
-                {images.map((image) => (
-                    <ImageGalleryItem
-                        key={image.id}
-                        item={image}
-                        openModal={this.openModal}
-                    />
-                ))}
-            </StyledImageGallery>
+            <>
+                <StyledImageGallery>
+                    {images.map((image) => (
+                        <ImageGalleryItem
+                            key={image.id}
+                            item={image}
+                            openModal={this.openModal.bind(this)}
+                        />
+                    ))}
+                </StyledImageGallery>
+                {isShowModal && (
+                    <Modal modalData={modalData} onClose={this.closeModal} />
+                )}
+            </>
         );
     }
 }
