@@ -49,7 +49,7 @@ class Modal extends Component {
 Modal.propTypes = {
     modalData: PropTypes.shape({
         largeImageURL: PropTypes.string.isRequired,
-        alt: PropTypes.string.isRequired,
+        alt: PropTypes.string,
     }), 
     onClose: PropTypes.func.isRequired,
 };

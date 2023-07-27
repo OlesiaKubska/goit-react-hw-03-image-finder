@@ -4,11 +4,8 @@ import { Header, Form, Button, ButtonLabel, Input } from './Searchbar.styled';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 class Searchbar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            query: '',
-        };
+    state = {
+        query: '',
     }
 
     handleChange = event => {
@@ -19,6 +16,11 @@ class Searchbar extends Component {
         event.preventDefault();
         const { query } = this.state;
         const { onSubmit } = this.props;
+        
+        if (query.trim() === "") {
+            return alert;
+        }
+        
         onSubmit(query);
     };
 

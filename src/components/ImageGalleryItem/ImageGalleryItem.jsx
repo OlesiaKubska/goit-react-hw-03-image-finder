@@ -3,19 +3,16 @@ import PropTypes from 'prop-types';
 import { StyledGalleryItem } from './ImageGalleryItem.styled';
 
 class ImageGalleryItem extends Component {
-    handleClick = (e) => {
-        e.preventDefault();
-        const { item, openModal } = this.props;
-        const { largeImageURL, alt } = item;
-        openModal(largeImageURL, alt);
-    };
-
     render() {
-        const { item } = this.props;
+        const { item, openModal } = this.props;
         const { alt, webformatURL } = item;
 
+        const handleClick = () => {
+            openModal(webformatURL, alt);
+        };
+        
         return (
-            <StyledGalleryItem onClick={this.handleClick}>
+            <StyledGalleryItem onClick={handleClick}>
                 <img src={webformatURL} alt={alt} />
             </StyledGalleryItem>
         );
