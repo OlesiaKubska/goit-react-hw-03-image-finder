@@ -18,7 +18,7 @@ class Searchbar extends Component {
         const { onSubmit } = this.props;
         
         if (query.trim() === "") {
-            return alert;
+            return alert("Please enter a valid query.");
         }
         
         onSubmit(query);

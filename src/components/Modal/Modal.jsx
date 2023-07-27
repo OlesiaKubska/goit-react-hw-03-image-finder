@@ -28,9 +28,6 @@ class Modal extends Component {
 
     render() {
         const { modalData } = this.props;
-        if (!modalData) {
-            return null;
-        }
         
         const { largeImageURL, alt } = modalData;
 

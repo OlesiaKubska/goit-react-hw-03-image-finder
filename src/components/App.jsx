@@ -12,16 +12,16 @@ const IMAGES_PER_PAGE = 12;
 
 export class App extends Component {
   state = {
-      images: [],
-      currentPage: 1,
-      query: '',
-      totalPages: 0,
-      totalHits: 0,
-      isLoading: false,
-      hasLoadedAll: false,
-      isFirstLoad: true,
-      isShowModal: false,
-      modalData: {},
+    images: [],
+    currentPage: 1,
+    query: '',
+    error: null,
+    totalHits: 0,
+    isLoading: false,
+    hasLoadedAll: false,
+    isFirstLoad: true,
+    isShowModal: false,
+    modalData: {},
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -31,34 +31,23 @@ export class App extends Component {
   }
 
   fetchData = async () => {
-    const { query, currentPage, isFirstLoad, images } = this.state;
+    const { query, currentPage } = this.state;
 
     try {
       this.setState({ isLoading: true });
 
-      if (!isFirstLoad || query.trim() !== '') {
-        const response = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
-        const { hits, totalHits } = response;
-
-        if (hits.length > 0) {
-          const newImages = [...images, ...hits];
-          const hasLoadedAll = currentPage >= Math.ceil(totalHits/ IMAGES_PER_PAGE);
-          
-          this.setState({
-            images: newImages,
-            hasLoadedAll,
-            totalHits,
-          });
-        } else {
-          this.setState({ hasLoadedAll: true });
-        }
+      const { hits, totalHits } = await api.fetchImages(query, currentPage, IMAGES_PER_PAGE);
+      
+      if (hits.length === 0) {
+        return alert("No results found.");
       }
-        
-      if (isFirstLoad) {
-        this.setState({ isFirstLoad: false });
-      }
+      
+      this.setState(prev => ({
+        images: [...prev.images, ...hits],
+        hasLoadedAll: currentPage >= Math.ceil(totalHits/ IMAGES_PER_PAGE),
+      }))
     } catch (error) {
-      console.error(error);
+      this.setState({ error });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -80,22 +69,20 @@ export class App extends Component {
   };
 
   closeModal = () => {
-    this.setState({ isShowModal: false });
+    this.setState({ isShowModal: false, modalData: {} });
   };
   
   render() {
-    const { images, isLoading, hasLoadedAll, isShowModal, modalData } = this.state;
-    const showButton = images.length > 0 && !isLoading && !hasLoadedAll;
+    const { images, isLoading, hasLoadedAll, isShowModal, modalData, error } = this.state;
+    const showButton = !hasLoadedAll && !isLoading && images.length > 0;
 
     return (
       <Container>
         <Searchbar onSubmit={this.handleSearchSubmit} />
 
-        {isLoading ? (
-          <Loader />
-        ) : (
-            <ImageGallery images={this.state.images} openModal={this.openModal}  />
-        )}
+        {isLoading && <Loader />}
+        {error && <p>Oops... Something went wrong.</p>}
+        {images.length > 0 && <ImageGallery images={images} openModal={this.openModal} />}
 
         {showButton && (
           <Button onClick={this.handleLoadMore}>Load More</Button>

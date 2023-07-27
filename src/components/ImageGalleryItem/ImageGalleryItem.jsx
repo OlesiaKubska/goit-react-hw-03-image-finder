@@ -5,15 +5,15 @@ import { StyledGalleryItem } from './ImageGalleryItem.styled';
 class ImageGalleryItem extends Component {
     render() {
         const { item, openModal } = this.props;
-        const { alt, webformatURL } = item;
+        const { tags, webformatURL, largeImageURL } = item;
 
         const handleClick = () => {
-            openModal(webformatURL, alt);
+            openModal(largeImageURL, tags);
         };
         
         return (
             <StyledGalleryItem onClick={handleClick}>
-                <img src={webformatURL} alt={alt} />
+                <img src={webformatURL} alt={tags} />
             </StyledGalleryItem>
         );
     }
@@ -21,7 +21,7 @@ class ImageGalleryItem extends Component {
 
 ImageGalleryItem.propTypes = {
     item: PropTypes.shape({
-        alt: PropTypes.string,
+        tags: PropTypes.string,
         webformatURL: PropTypes.string.isRequired,
         largeImageURL: PropTypes.string.isRequired,
     }).isRequired,

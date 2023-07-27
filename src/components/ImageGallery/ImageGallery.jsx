@@ -25,11 +25,12 @@ ImageGallery.propTypes = {
     images: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.number.isRequired,
-            alt: PropTypes.string,
+            tags: PropTypes.string,
             webformatURL: PropTypes.string.isRequired,
             largeImageURL: PropTypes.string.isRequired,
         })
     ).isRequired,
+    openModal: PropTypes.func.isRequired,
 };
 
 export default ImageGallery;
